@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+model Category {
+  id                    String                 @id @default(cuid())
+  slug                  String                 @unique
+  name                  String
+  description           String?
+  tasks                 Task[]
+  pluginRecommendations PluginRecommendation[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+}
+
+model Task {
+  id          String         @id @default(cuid())
+  categoryId  String
+  title       String
+  description String
+  order       Int
+  difficulty  TaskDifficulty @default(MEDIUM)
+  estimatedMin Int?
+  category    Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  userProgress UserTaskProgress[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([categoryId, order])
+}
+
+model PluginRecommendation {
+  id          String   @id @default(cuid())
+  categoryId  String
+  name        String
+  description String
+  whyUse      String
+  websiteUrl  String?
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([categoryId, name])
+}
+
+model UserTaskProgress {
+  id        String     @id @default(cuid())
+  userId    String
+  taskId    String
+  status    TaskStatus @default(TODO)
+  notes     String?
+  completedAt DateTime?
+  task      Task       @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, taskId])
+}
