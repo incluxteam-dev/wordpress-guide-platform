@@ -1,5 +1,6 @@
 import { useGuideStore } from '../store/guideStore';
 import { useGuideData } from '../hooks/useGuideData';
+import TaskList from '../components/TaskList';
 
 export default function HomePage() {
   const { categories, loading, error } = useGuideData();
@@ -16,11 +17,7 @@ export default function HomePage() {
           <h2>{category.name}</h2>
           {category.description ? <p>{category.description}</p> : null}
           <h3>Tarefas</h3>
-          <ul>
-            {category.tasks.map((task) => (
-              <li key={task.id}>{task.title}</li>
-            ))}
-          </ul>
+          <TaskList tasks={category.tasks} />
           <h3>Plugins recomendados</h3>
           <ul>
             {category.pluginRecommendations.map((plugin) => (

@@ -22,7 +22,7 @@ export function createServer() {
           return;
         }
 
-        callback(new Error('CORS origin not allowed'));
+        callback(new Error(`CORS origin not allowed: ${origin}`));
       }
     })
   );
