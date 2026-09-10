@@ -17,8 +17,9 @@ export function useGuideData(): GuideDataState {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
 
-    fetchGuideData()
+    fetchGuideData(controller.signal)
       .then((categories) => {
         if (!active) return;
         setState({ categories, loading: false, error: null });
@@ -34,6 +35,7 @@ export function useGuideData(): GuideDataState {
 
     return () => {
       active = false;
+      controller.abort();
     };
   }, []);
 

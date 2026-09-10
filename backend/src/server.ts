@@ -14,7 +14,18 @@ export function createServer() {
     .filter(Boolean);
 
   app.use(helmet());
-  app.use(cors({ origin: allowedOrigins }));
+  app.use(
+    cors({
+      origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+
+        callback(new Error('CORS origin not allowed'));
+      }
+    })
+  );
   app.use(express.json());
   app.use(morgan('dev'));
 
