@@ -8,9 +8,13 @@ import { errorHandler } from './middleware/errorHandler';
 
 export function createServer() {
   const app = express();
+  const allowedOrigins = (process.env.FRONTEND_URL ?? 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
   app.use(helmet());
-  app.use(cors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:5173' }));
+  app.use(cors({ origin: allowedOrigins }));
   app.use(express.json());
   app.use(morgan('dev'));
 
