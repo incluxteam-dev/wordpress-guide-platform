@@ -14,7 +14,7 @@ export default function HomePage() {
       {categories.map((category) => (
         <article key={category.id}>
           <h2>{category.name}</h2>
-          <p>{category.description}</p>
+          {category.description ? <p>{category.description}</p> : null}
           <h3>Tarefas</h3>
           <ul>
             {category.tasks.map((task) => (
